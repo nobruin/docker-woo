@@ -1,0 +1,60 @@
+version: '3.1'
+
+services:
+  
+  wordpress:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wordpress-php
+    restart: always
+    tty: true
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: exampleuser
+      WORDPRESS_DB_PASSWORD: examplepass
+      WORDPRESS_DB_NAME: exampledb
+    volumes:
+      - ./src:/var/www/html
+      - ./logs:/var/log
+    depends_on:
+      - mysql
+    networks:
+      - wordpress-net
+
+  mysql:
+    image: mysql:5.7
+    container_name: wordpress-mysql
+    command: --innodb-use-native-aio=0
+    restart: always
+    user: $UID:$GID
+    tty: true
+    environment:
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: examplepass
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    volumes:
+      - ./data/db:/var/lib/mysql:delegated
+    networks:
+      - wordpress-net
+
+  adminer:
+    image: adminer
+    restart: always
+    container_name: wordpress-adminer
+    ports:
+        - 81:8080
+    links:
+        - mysql
+    networks:
+      - wordpress-net
+
+networks:
+  wordpress-net:
+    driver: bridge
