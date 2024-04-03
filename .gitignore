@@ -1,0 +1,10 @@
+# directories
+/src
+/logs
+/data
+/ssl
+
+
+
+#ides
+.vscode
