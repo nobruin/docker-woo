@@ -12,6 +12,7 @@ services:
     ports:
       - 80:80
       - 443:443
+      - 9003:9003
     environment:
       WORDPRESS_DB_HOST: mysql
       WORDPRESS_DB_USER: exampleuser
@@ -41,17 +42,6 @@ services:
       - 3306:3306
     volumes:
       - ./data/db:/var/lib/mysql:delegated
-    networks:
-      - wordpress-net
-
-  adminer:
-    image: adminer
-    restart: always
-    container_name: wordpress-adminer
-    ports:
-        - 81:8080
-    links:
-        - mysql
     networks:
       - wordpress-net
 
